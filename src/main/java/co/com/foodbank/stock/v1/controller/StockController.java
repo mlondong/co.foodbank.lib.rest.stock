@@ -2,8 +2,20 @@ package co.com.foodbank.stock.v1.controller;
 
 import java.util.Collection;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import co.com.foodbank.contribution.sdk.exception.SDKContributionNotFoundException;
+import co.com.foodbank.contribution.sdk.exception.SDKContributionServiceException;
+import co.com.foodbank.contribution.sdk.exception.SDKContributionServiceIllegalArgumentException;
+import co.com.foodbank.contribution.sdk.exception.SDKContributionServiceNotAvailableException;
+import co.com.foodbank.product.sdk.exception.SDKProductNotFoundException;
+import co.com.foodbank.product.sdk.exception.SDKProductServiceException;
+import co.com.foodbank.product.sdk.exception.SDKProductServiceIllegalArgumentException;
+import co.com.foodbank.product.sdk.exception.SDKProductServiceNotAvailableException;
 import co.com.foodbank.stock.dto.StockDTO;
 import co.com.foodbank.stock.exception.StockException;
 import co.com.foodbank.stock.exception.StockNotFoundException;
@@ -53,13 +65,79 @@ public class StockController {
      * Create Stock.
      * 
      * @param dto
-     * @param _id
      * @return {@code IStock}
      * @throws StockException
      * @throws StockNotFoundException
+     * @throws SDKContributionServiceIllegalArgumentException
+     * @throws SDKContributionServiceException
+     * @throws SDKContributionServiceNotAvailableException
+     * @throws JsonProcessingException
+     * @throws JsonMappingException
+     * @throws SDKProductServiceIllegalArgumentException
+     * @throws SDKProductServiceException
+     * @throws SDKProductServiceNotAvailableException
+     * @throws SDKProductNotFoundException
+     * @throws SDKContributionNotFoundException
      */
-    public IStock create(StockDTO dto, String _id)
+    public IStock create(StockDTO dto) throws StockNotFoundException,
+            StockException, JsonMappingException, JsonProcessingException,
+            SDKContributionServiceNotAvailableException,
+            SDKContributionServiceException,
+            SDKContributionServiceIllegalArgumentException,
+            SDKProductServiceNotAvailableException, SDKProductServiceException,
+            SDKProductServiceIllegalArgumentException,
+            SDKContributionNotFoundException, SDKProductNotFoundException {
+        return service.create(dto);
+    }
+
+
+
+    /**
+     * Method to update stock.
+     * 
+     * @param dto
+     * @param _idStock
+     * @return {@code IStock}
+     * @throws SDKProductServiceException
+     * @throws SDKProductNotFoundException
+     * @throws SDKProductServiceIllegalArgumentException
+     * @throws StockException
+     * @throws JsonProcessingException
+     * @throws StockNotFoundException
+     * @throws JsonMappingException
+     */
+    public IStock update(@Valid StockDTO dto,
+            @NotNull @NotBlank String _idStock) throws JsonMappingException,
+            StockNotFoundException, JsonProcessingException, StockException,
+            SDKProductServiceIllegalArgumentException,
+            SDKProductNotFoundException, SDKProductServiceException {
+        return service.update(dto, _idStock);
+    }
+
+
+
+    /**
+     * Method to search contribution in stock.
+     * 
+     * @param idContribution
+     * @return {@code  Collection<IStock> }
+     * @throws StockException
+     */
+    public Collection<IStock> searchContribution(
+            @NotNull @NotBlank String idContribution)
             throws StockNotFoundException, StockException {
-        return service.create(dto, _id);
+        return service.searchContribution(idContribution);
+    }
+
+
+    /**
+     * Method to search products in stock.
+     * 
+     * @param idContribution
+     * @return {@code  Collection<IStock> }
+     */
+    public Collection<IStock> searchProducts(@NotNull @NotBlank String name)
+            throws StockNotFoundException {
+        return service.searchProducts(name);
     }
 }
