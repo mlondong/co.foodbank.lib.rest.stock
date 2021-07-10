@@ -32,6 +32,21 @@
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
 
+
+		<!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-mongodb -->
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-mongodb</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-apt -->
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+		</dependency>
+
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -76,34 +91,41 @@
 			<version>2.4.0</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.11.4</version>
-		</dependency>
+
 
 
 
 		<!-- DTO's -->
 		<dependency>
-			<groupId>co.com.foodbank.contribution</groupId>
-			<artifactId>co.foodbank.lib.dto.contribution</artifactId>
+			<groupId>co.com.foodbank.stock</groupId>
+			<artifactId>co.foodbank.lib.dto.stock</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
 		<dependency>
 			<groupId>co.com.foodbank.product</groupId>
 			<artifactId>co.foodbank.lib.dto.product</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+		<!-- DTO's -->
 
+
+
+		<!-- SDK -->
 		<dependency>
-			<groupId>co.com.foodbank.stock</groupId>
-			<artifactId>co.foodbank.lib.dto.stock</artifactId>
+			<groupId>co.com.foodbank.contribution</groupId>
+			<artifactId>co.foodbank.lib.sdk.contribution</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>co.com.foodbank.product</groupId>
+			<artifactId>co.foodbank.lib.sdk.product</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- SDK -->
+
+
 
 	</dependencies>
 
@@ -115,6 +137,27 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+				<groupId>com.mysema.maven</groupId>
+				<artifactId>apt-maven-plugin</artifactId>
+				<version>1.1.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/generated-sources/java</outputDirectory>
+							<processor>
+								org.springframework.data.mongodb.repository.support.MongoAnnotationProcessor
+							</processor>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
 		</plugins>
 	</build>
 

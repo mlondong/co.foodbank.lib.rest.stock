@@ -3,9 +3,12 @@ package co.com.foodbank.stock.v1.model;
 import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import com.querydsl.core.annotations.QueryEntity;
 import co.com.foodbank.contribution.dto.IContribution;
 import co.com.foodbank.product.dto.IProduct;
 
+
+@QueryEntity
 @Document(collection = "Stock")
 public class Stock implements IStock {
 
