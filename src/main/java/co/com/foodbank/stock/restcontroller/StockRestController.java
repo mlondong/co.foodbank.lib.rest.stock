@@ -25,11 +25,11 @@ import co.com.foodbank.product.sdk.exception.SDKProductNotFoundException;
 import co.com.foodbank.product.sdk.exception.SDKProductServiceException;
 import co.com.foodbank.product.sdk.exception.SDKProductServiceIllegalArgumentException;
 import co.com.foodbank.product.sdk.exception.SDKProductServiceNotAvailableException;
+import co.com.foodbank.stock.dto.IStock;
 import co.com.foodbank.stock.dto.StockDTO;
 import co.com.foodbank.stock.exception.StockException;
 import co.com.foodbank.stock.exception.StockNotFoundException;
 import co.com.foodbank.stock.v1.controller.StockController;
-import co.com.foodbank.stock.v1.model.IStock;
 import co.com.foodbank.stock.v1.model.Stock;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,6 +51,34 @@ public class StockRestController {
 
     @Autowired
     private StockController controller;
+
+
+
+    /**
+     * Method to find by Products in Stock by id.
+     * 
+     * @return {@code Collection<IStock>}
+     * @throws StockException
+     */
+    @Operation(summary = "Find Products in Stock by Id.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200",
+                            description = "Found the stock",
+                            content = {
+                                    @Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "500",
+                            description = "Service not available.",
+                            content = @Content),
+                    @ApiResponse(responseCode = "400",
+                            description = "Bad request.", content = @Content)})
+    @GetMapping(value = "/findProductById/id/{id-product}")
+    public Collection<IStock> findProductById(
+            @PathVariable("id-product") @NotNull @NotBlank String product)
+            throws StockException, StockNotFoundException {
+        return controller.findProductById(product);
+
+    }
 
 
 
@@ -100,7 +128,7 @@ public class StockRestController {
                             content = @Content),
                     @ApiResponse(responseCode = "400",
                             description = "Bad request.", content = @Content)})
-    @GetMapping(value = "/searchContribution/id/{id-contribution}")
+    @GetMapping(value = "/findContributionById/id/{id-contribution}")
     public Collection<IStock> searchContribution(
             @PathVariable("id-contribution") @NotNull @NotBlank String idContribution)
             throws StockException, StockNotFoundException {
@@ -226,6 +254,9 @@ public class StockRestController {
      * @throws SDKProductServiceIllegalArgumentException
      * @throws JsonProcessingException
      * @throws JsonMappingException
+     * @throws SDKContributionNotFoundException
+     * @throws SDKContributionServiceIllegalArgumentException
+     * @throws SDKContributionServiceException
      */
     @Operation(summary = "Update a stock", description = "", tags = {"stock"})
     @ApiResponses(
@@ -246,7 +277,10 @@ public class StockRestController {
             @PathVariable("id") @NotNull @NotBlank String _idStock)
             throws StockNotFoundException, StockException, JsonMappingException,
             JsonProcessingException, SDKProductServiceIllegalArgumentException,
-            SDKProductNotFoundException, SDKProductServiceException {
+            SDKProductNotFoundException, SDKProductServiceException,
+            SDKContributionServiceException,
+            SDKContributionServiceIllegalArgumentException,
+            SDKContributionNotFoundException {
         return controller.update(dto, _idStock);
     }
 

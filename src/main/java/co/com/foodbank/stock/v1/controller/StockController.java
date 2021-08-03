@@ -16,11 +16,11 @@ import co.com.foodbank.product.sdk.exception.SDKProductNotFoundException;
 import co.com.foodbank.product.sdk.exception.SDKProductServiceException;
 import co.com.foodbank.product.sdk.exception.SDKProductServiceIllegalArgumentException;
 import co.com.foodbank.product.sdk.exception.SDKProductServiceNotAvailableException;
+import co.com.foodbank.stock.dto.IStock;
 import co.com.foodbank.stock.dto.StockDTO;
 import co.com.foodbank.stock.exception.StockException;
 import co.com.foodbank.stock.exception.StockNotFoundException;
 import co.com.foodbank.stock.service.StockService;
-import co.com.foodbank.stock.v1.model.IStock;
 
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.stock.v1.controller
@@ -105,12 +105,18 @@ public class StockController {
      * @throws JsonProcessingException
      * @throws StockNotFoundException
      * @throws JsonMappingException
+     * @throws SDKContributionNotFoundException
+     * @throws SDKContributionServiceIllegalArgumentException
+     * @throws SDKContributionServiceException
      */
     public IStock update(@Valid StockDTO dto,
             @NotNull @NotBlank String _idStock) throws JsonMappingException,
             StockNotFoundException, JsonProcessingException, StockException,
             SDKProductServiceIllegalArgumentException,
-            SDKProductNotFoundException, SDKProductServiceException {
+            SDKProductNotFoundException, SDKProductServiceException,
+            SDKContributionServiceException,
+            SDKContributionServiceIllegalArgumentException,
+            SDKContributionNotFoundException {
         return service.update(dto, _idStock);
     }
 
@@ -139,5 +145,17 @@ public class StockController {
     public Collection<IStock> searchProducts(@NotNull @NotBlank String name)
             throws StockNotFoundException {
         return service.searchProducts(name);
+    }
+
+
+    /**
+     * Method to find products in stock by Id.
+     * 
+     * @param idContribution
+     * @return {@code  Collection<IStock> }
+     */
+    public Collection<IStock> findProductById(
+            @NotNull @NotBlank String product) {
+        return service.findProductById(product);
     }
 }
