@@ -29,11 +29,11 @@ import co.com.foodbank.product.sdk.exception.SDKProductServiceIllegalArgumentExc
 import co.com.foodbank.product.sdk.exception.SDKProductServiceNotAvailableException;
 import co.com.foodbank.product.sdk.model.ResponseProductData;
 import co.com.foodbank.product.sdk.service.SDKProductService;
+import co.com.foodbank.stock.dto.IStock;
 import co.com.foodbank.stock.dto.StockDTO;
 import co.com.foodbank.stock.exception.StockException;
 import co.com.foodbank.stock.exception.StockNotFoundException;
 import co.com.foodbank.stock.repository.StockRepository;
-import co.com.foodbank.stock.v1.model.IStock;
 import co.com.foodbank.stock.v1.model.Stock;
 
 /**
@@ -58,7 +58,8 @@ public class StockService {
     private SDKProductService sdkProduct;
 
     private final static String MSG_CONTRIBUTION =
-            "Contributions already exist, cant create in stock.";
+            "Contributions to uptade isnt equals then exist in db.";
+
 
     /**
      * Method to find all.
@@ -116,31 +117,12 @@ public class StockService {
             SDKProductServiceIllegalArgumentException,
             SDKContributionNotFoundException, SDKProductNotFoundException {
 
-        Collection<IStock> collection = this
-                .searchContribution(dto.getContribution().getContribution());
-        checkContributionInStock(collection);
+
         IContribution contribution = findContribution(dto);
         checkStateInHouse(contribution);
         IProduct product = findProduct(dto);
 
         return repository.save(buildStock(dto, contribution, product));
-    }
-
-
-
-    /**
-     * Check is exist a contribution in Stock.
-     * 
-     * @param collection
-     * @throws StockException
-     */
-    private void checkContributionInStock(Collection<IStock> collection)
-            throws StockException {
-        if (!collection.isEmpty()) {
-            String ids = collection.stream().map(d -> d.getId())
-                    .collect(Collectors.joining(" ; "));
-            throw new StockException(MSG_CONTRIBUTION, ids);
-        }
     }
 
 
@@ -251,16 +233,27 @@ public class StockService {
             @NotNull @NotBlank String _idStock)
             throws StockNotFoundException, StockException, JsonMappingException,
             JsonProcessingException, SDKProductServiceIllegalArgumentException,
-            SDKProductNotFoundException, SDKProductServiceException {
+            SDKProductNotFoundException, SDKProductServiceException,
+            SDKContributionServiceException,
+            SDKContributionServiceIllegalArgumentException,
+            SDKContributionNotFoundException {
 
         Stock result = modelMapper.map(this.finById(_idStock), Stock.class);
         result.setQuantity(Long.valueOf(dto.getQuantity()));
+
+        IContribution contribution = findContribution(dto);
+        if (!contribution.getId().toString()
+                .equals(dto.getContribution().getContribution())) {
+            throw new StockException(contribution.getId(), MSG_CONTRIBUTION);
+        }
+
         IProduct product = findProduct(dto);
         result.setProduct(product);
         result.setDateStock(new Date());
 
         return repository.save(result);
     }
+
 
 
     /**
@@ -273,7 +266,7 @@ public class StockService {
     public Collection<IStock> searchContribution(String idContribution)
             throws StockNotFoundException, StockException {
 
-        return repository.searchContribution(idContribution).stream()
+        return repository.findContribution(idContribution).stream()
                 .filter(d -> d.getContribution().getId().equals(idContribution))
                 .collect(Collectors.toList());
 
@@ -291,6 +284,18 @@ public class StockService {
             throws StockNotFoundException {
         return repository.searchProducts(name).stream()
                 .map(d -> modelMapper.map(d, IStock.class))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Method to find products in stock by Id.
+     * 
+     * @param idContribution
+     * @return {@code  Collection<IStock> }
+     */
+    public Collection<IStock> findProductById(String product) {
+        return repository.findProduct(product).stream()
+                .filter(d -> d.getProduct().getId().equals(product))
                 .collect(Collectors.toList());
     }
 

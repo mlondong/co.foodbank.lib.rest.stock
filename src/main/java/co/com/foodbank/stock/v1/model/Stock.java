@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.querydsl.core.annotations.QueryEntity;
 import co.com.foodbank.contribution.dto.IContribution;
 import co.com.foodbank.product.dto.IProduct;
+import co.com.foodbank.stock.dto.IStock;
 
 
 @QueryEntity
@@ -25,10 +26,12 @@ public class Stock implements IStock {
      */
     public Stock() {}
 
+
     @Override
     public Long getQuantity() {
         return quantity;
     }
+
 
     public void setQuantity(Long quantity) {
         this.quantity = quantity;

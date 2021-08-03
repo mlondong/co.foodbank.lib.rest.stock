@@ -16,12 +16,40 @@ import co.com.foodbank.stock.v1.model.Stock;
 public interface StockRepository extends MongoRepository<Stock, String>,
         QuerydslPredicateExecutor<Stock> {
 
+
+
+    /**
+     * Find Contribution in Stock.
+     * 
+     * @param id
+     * @return {@code Collection<Stock>}
+     * @throws StockNotFoundException
+     */
     @Query("{'contribution._id': ?0}")
-    Collection<Stock> searchContribution(String id)
+    Collection<Stock> findContribution(String id)
             throws StockNotFoundException;
 
 
 
+    /**
+     * Find Product in Stock.
+     * 
+     * @param id
+     * @return {@code Collection<Stock>}
+     * @throws StockNotFoundException
+     */
+    @Query("{'product._id': ?0}")
+    Collection<Stock> findProduct(String id) throws StockNotFoundException;
+
+
+
+    /**
+     * Search product name in Stock.
+     * 
+     * @param product
+     * @return {@code Collection<Stock>}
+     * @throws StockNotFoundException
+     */
     @Query("{'product.name':{'$regex':'?0','$options':'i'}}")
     Collection<Stock> searchProducts(String product)
             throws StockNotFoundException;
