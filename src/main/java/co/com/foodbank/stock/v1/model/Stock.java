@@ -4,9 +4,10 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import com.querydsl.core.annotations.QueryEntity;
-import co.com.foodbank.contribution.dto.IContribution;
-import co.com.foodbank.product.dto.IProduct;
-import co.com.foodbank.stock.dto.IStock;
+import co.com.foodbank.contribution.dto.interfaces.IContribution;
+import co.com.foodbank.product.dto.interfaces.IProduct;
+import co.com.foodbank.stock.dto.interfaces.IStock;
+
 
 
 @QueryEntity
